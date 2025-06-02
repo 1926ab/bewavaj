@@ -1,37 +1,109 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>校园新闻发布系统 - 登录</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>图书管理系统</title>
+    <style>
+        /* 设置页面样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('background.jpg'); /* 插入背景图片，图片文件名为background.jpg */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+        .login-box h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .login-box form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .login-box input, .login-box select, .login-box button, .login-box a {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-box button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .login-box button:hover {
+            background-color: #45a049;
+        }
+        .login-box a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .login-box a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h4>用户登录</h4>
-        </div>
-        <div class="card-body">
-          <form action="login" method="post">
-            <div class="form-group">
-              <label for="username">用户名</label>
-              <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-              <label for="password">密码</label>
-              <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">登录</button>
-            <a href="register.jsp" class="btn btn-link">注册新用户</a>
-          </form>
-          <c:if test="${not empty error}">
-            <div class="alert alert-danger mt-3">${error}</div>
-          </c:if>
-        </div>
-      </div>
+<div class="container">
+    <div class="login-box">
+        <h1>图书管理系统</h1>
+        <form method="post">
+            <label for="login-type">选择登录类型:</label>
+            <select name="loginType" id="login-type" required>
+                <option value="admin">管理员登录</option>
+                <option value="student">学生借阅登录</option>
+            </select>
+            <input type="text" name="username" placeholder="账号" required>
+            <input type="password" name="password" placeholder="密码" required>
+            <button type="submit">登录</button>
+        </form>
+        <a href="register.jsp">注册学生借阅账号</a>
     </div>
-  </div>
 </div>
+
+<%-- 登录逻辑框架 --%>
+<%
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
+        String loginType = request.getParameter("loginType");
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        // 后续可引入数据库验证逻辑
+        if ("admin".equals(loginType)) {
+            // 管理员登录后跳转到 admin.jsp
+            response.sendRedirect("admin.jsp");
+        } else if ("student".equals(loginType)) {
+            // 学生借阅登录后跳转到 student.jsp
+            response.sendRedirect("student.jsp");
+        } else {
+            // 登录失败逻辑，可根据需求扩展
+%>
+<script>alert('登录失败：请检查登录信息');</script>
+<%
+        }
+    }
+%>
 </body>
 </html>
