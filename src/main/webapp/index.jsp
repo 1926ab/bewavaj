@@ -1,15 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
+<%@ page import="com.library.awa.repository.StudentRepository" %>
+<%@ page import="com.library.awa.repository.AdminRepository" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>图书管理系统</title>
     <style>
-        /* 设置页面样式 */
+        /* 页面样式 */
         body {
             margin: 0;
             padding: 0;
-            background-image: url('background.jpg'); /* 插入背景图片，图片文件名为background.jpg */
+            background-image: url('background.jpg');
             background-size: cover;
             background-position: center;
             font-family: Arial, sans-serif;
@@ -83,29 +84,29 @@
     </div>
 </div>
 
-<%-- 登录逻辑框架 --%>
+<%-- 登录逻辑 --%>
 <%
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         String loginType = request.getParameter("loginType");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // 后续可引入数据库验证逻辑
         if ("admin".equals(loginType)) {
-            // 管理员登录后跳转到 admin.jsp
-            response.sendRedirect("admin.jsp");
+            AdminRepository adminRepo = new AdminRepository();
+            if (adminRepo.validateAdminLogin(username, password)) {
+                response.sendRedirect("admin.jsp"); // 登录成功，跳转到管理员页面
+            } else {
+                out.println("<script>alert('管理员登录失败，请检查账号或密码');</script>");
+            }
         } else if ("student".equals(loginType)) {
-            // 学生借阅登录后跳转到 student.jsp
-            response.sendRedirect("student.jsp");
-        } else {
-            // 登录失败逻辑，可根据需求扩展
-%>
-<script>alert('登录失败：请检查登录信息');</script>
-<%
+            StudentRepository studentRepo = new StudentRepository();
+            if (studentRepo.validateStudentLogin(username, password)) {
+                response.sendRedirect("student.jsp"); // 登录成功，跳转到学生页面
+            } else {
+                out.println("<script>alert('学生登录失败，请检查账号或密码');</script>");
+            }
         }
     }
 %>
 </body>
 </html>
-
-

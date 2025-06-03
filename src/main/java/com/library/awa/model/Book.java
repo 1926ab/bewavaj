@@ -1,71 +1,81 @@
 package com.library.awa.model;
 
 public class Book {
-    private String id;       // 书籍编号
-    private String title;    // 书名
-    private String author;   // 作者
-    private boolean available; // 是否可借阅
-    private int stock;       // 剩余库存数量
+    private String id;           // 图书唯一标识符
+    private String title;        // 图书名称
+    private String author;       // 作者
+    private double price;        // 图书价格
+    private int quantity;        // 库存数量
+    private String category;     // 图书分类
 
-    // 构造方法
-    public Book(String id, String title, String author, boolean available, int stock) {
+    public Book(String id, String title, String author, double price, int quantity, String category) {
         this.id = id;
         this.title = title;
         this.author = author;
-        this.available = available;
-        this.stock = stock;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
     }
 
-    // Getter 和 Setter 方法
+    // Getter 方法
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getAuthor() {
         return author;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    // Setter 方法
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setAuthor(String author) {
         this.author = author;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public int getStock() {
-        return stock;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    // 重写 toString 方法
     @Override
     public String toString() {
         return "Book{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", available=" + available +
-                ", stock=" + stock +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", category='" + category + '\'' +
                 '}';
     }
 }
