@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.library.awa.repository.StudentRepository" %>
+<%@ page import="com.library.awa.model.Student" %>
+<%@ page import="java.util.UUID" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,6 +56,11 @@
         .register-box button:hover {
             background-color: #45a049;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +73,11 @@
             <input type="password" name="password" placeholder="密码" required>
             <button type="submit">注册</button>
         </form>
+        <div class="error-message">
+            <% if (request.getAttribute("errorMessage") != null) { %>
+            <%= request.getAttribute("errorMessage") %>
+            <% } %>
+        </div>
     </div>
 </div>
 
@@ -78,12 +90,19 @@
 
         StudentRepository studentRepo = new StudentRepository();
         try {
-            studentRepo.addStudent(new Student(UUID.randomUUID().toString(), name, email, password));
-            out.println("<script>alert('注册成功，请登录');window.location='index.jsp';</script>");
+            // 检查邮箱是否已注册
+            if (studentRepo.isEmailRegistered(email)) {
+                request.setAttribute("errorMessage", "邮箱已被注册，请使用其他邮箱");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            } else {
+                studentRepo.registerStudent(new Student(UUID.randomUUID().toString(), name, email, password));
+                out.println("<script>alert('注册成功，请登录');window.location='index.jsp';</script>");
+            }
         } catch (Exception e) {
-            out.println("<script>alert('注册失败：" + e.getMessage() + "');</script>");
+            request.setAttribute("errorMessage", "注册失败：" + e.getMessage());
+            request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }
 %>
 </body>
-</html>
+</html>.
