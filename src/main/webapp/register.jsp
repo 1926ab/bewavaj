@@ -104,5 +104,12 @@
         }
     }
 %>
+<%
+    String name = request.getParameter("name");
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+
+    System.out.println("表单数据：" + name + ", " + email + ", " + password);
+%>
 </body>
 </html>.

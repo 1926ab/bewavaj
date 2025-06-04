@@ -29,9 +29,13 @@ public class StudentRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next(); // 如果有结果，则邮箱已被注册
+                if (rs.next()) {
+                    System.out.println("邮箱已注册：" + email); // 调试日志
+                    return true;
+                }
             }
         } catch (SQLException e) {
+            System.err.println("SQL异常：" + e.getMessage());
             e.printStackTrace();
         }
         return false;
