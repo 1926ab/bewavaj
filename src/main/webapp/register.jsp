@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.library.awa.repository.StudentRepository" %>
+<%@ page import="com.library.awa.service.StudentService" %>
 <%@ page import="com.library.awa.model.Student" %>
 <%@ page import="java.util.UUID" %>
 <!DOCTYPE html>
@@ -7,7 +7,6 @@
 <head>
     <title>学生注册</title>
     <style>
-        /* 页面样式 */
         body {
             margin: 0;
             padding: 0;
@@ -88,28 +87,22 @@
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        StudentRepository studentRepo = new StudentRepository();
+        StudentService studentService = new StudentService();
+        Student student = new Student(UUID.randomUUID().toString(), name, email, password);
+
         try {
-            // 检查邮箱是否已注册
-            if (studentRepo.isEmailRegistered(email)) {
-                request.setAttribute("errorMessage", "邮箱已被注册，请使用其他邮箱");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+            if (studentService.registerStudent(student)) {
+                out.println("<script>alert('注册成功，请登录'); window.location='index.jsp';</script>");
             } else {
-                studentRepo.registerStudent(new Student(UUID.randomUUID().toString(), name, email, password));
-                out.println("<script>alert('注册成功，请登录');window.location='index.jsp';</script>");
+                request.setAttribute("errorMessage", "注册失败，邮箱可能已被注册！");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
             }
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "注册失败：" + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "注册过程中发生错误：" + e.getMessage());
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }
 %>
-<%
-    String name = request.getParameter("name");
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-
-    System.out.println("表单数据：" + name + ", " + email + ", " + password);
-%>
 </body>
-</html>.
+</html>

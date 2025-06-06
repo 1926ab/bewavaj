@@ -5,11 +5,13 @@ import com.library.awa.database.DatabaseConnection;
 
 import java.sql.*;
 
+import static com.library.awa.database.DatabaseConnection.getConnection;
+
 public class StudentRepository {
     // 验证学生登录
     public boolean validateStudentLogin(String email, String password) {
         String sql = "SELECT * FROM Students WHERE email = ? AND password = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             stmt.setString(2, password);
@@ -25,7 +27,7 @@ public class StudentRepository {
     // 检查邮箱是否已注册
     public boolean isEmailRegistered(String email) {
         String sql = "SELECT * FROM Students WHERE email = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -48,8 +50,8 @@ public class StudentRepository {
             return false; // 邮箱已注册，返回失败
         }
 
-        String sql = "INSERT INTO Students (id, name, email, password) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
+        String sql = "INSERT INTO Students VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, student.getId());
             stmt.setString(2, student.getName());
