@@ -23,15 +23,6 @@ public class StudentService {
         }
     }
 
-    public Student findStudentById(String id) {
-        try {
-            return studentDao.findStudentById(id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public List<Student> getAllStudents() {
         try {
             return studentDao.findAllStudents();

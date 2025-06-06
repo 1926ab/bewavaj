@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.library.awa.service.StudentService" %>
 <%@ page import="com.library.awa.model.Student" %>
-<%@ page import="java.util.UUID" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,7 +87,7 @@
         String password = request.getParameter("password");
 
         StudentService studentService = new StudentService();
-        Student student = new Student(UUID.randomUUID().toString(), name, email, password);
+        Student student = new Student(name, email, password);
 
         try {
             if (studentService.registerStudent(student)) {
