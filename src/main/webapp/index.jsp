@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.library.awa.dao.impl.StudentDaoImpl" %>
 <%@ page import="com.library.awa.repository.AdminRepository" %>
+<%@ page import="com.library.awa.dao.impl.AdminDaoImpl" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -92,8 +93,8 @@
         String password = request.getParameter("password");
 
         if ("admin".equals(loginType)) {
-            AdminRepository adminRepo = new AdminRepository();
-            if (adminRepo.validateAdminLogin(username, password)) {
+            AdminDaoImpl adminDao = new AdminDaoImpl();
+            if (adminDao.validateAdminLogin(username, password)) {
                 response.sendRedirect("admin.jsp"); // 登录成功，跳转到管理员页面
             } else {
                 out.println("<script>alert('管理员登录失败，请检查账号或密码');</script>");
