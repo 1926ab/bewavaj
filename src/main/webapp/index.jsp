@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.library.awa.repository.StudentRepository" %>
+<%@ page import="com.library.awa.dao.impl.StudentDaoImpl" %>
 <%@ page import="com.library.awa.repository.AdminRepository" %>
 <!DOCTYPE html>
 <html>
@@ -99,8 +99,8 @@
                 out.println("<script>alert('管理员登录失败，请检查账号或密码');</script>");
             }
         } else if ("student".equals(loginType)) {
-            StudentRepository studentRepo = new StudentRepository();
-            if (studentRepo.validateStudentLogin(username, password)) {
+            StudentDaoImpl studentDao = new StudentDaoImpl(); // 替换为 StudentDaoImpl
+            if (studentDao.validateStudentLogin(username, password)) { // 调用 validateStudentLogin
                 response.sendRedirect("student.jsp"); // 登录成功，跳转到学生页面
             } else {
                 out.println("<script>alert('学生登录失败，请检查账号或密码');</script>");

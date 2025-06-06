@@ -66,7 +66,6 @@
       <th>书籍编号</th>
       <th>书名</th>
       <th>作者</th>
-      <th>是否可借阅</th>
       <th>剩余库存</th>
       <th>操作</th>
     </tr>
@@ -79,7 +78,7 @@
       try {
         books = bookRepository.getAllBooks(); // 从数据库加载所有图书信息
       } catch (Exception e) {
-        out.println("<tr><td colspan='6'>无法加载图书信息，请稍后重试。</td></tr>");
+        out.println("<tr><td colspan='5'>无法加载图书信息，请稍后重试。</td></tr>");
       }
 
       for (Book book : books) {
@@ -88,10 +87,9 @@
       <td><%= book.getId() %></td>
       <td><%= book.getTitle() %></td>
       <td><%= book.getAuthor() %></td>
-      <td><%= book.isAvailable() ? "可借阅" : "不可借阅" %></td>
-      <td><%= book.getStock() %></td>
+      <td><%= book.getQuantity() %></td> <!-- 替换为 getQuantity() -->
       <td>
-        <% if (book.isAvailable() && book.getStock() > 0) { %>
+        <% if (book.getQuantity() > 0) { %>
         <form method="post" action="borrowBook.jsp">
           <input type="hidden" name="bookId" value="<%= book.getId() %>">
           <button type="submit" class="borrow-btn">借阅</button>
