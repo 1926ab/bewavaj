@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, com.library.awa.model.Book, com.library.awa.dao.impl.BorrowRecordDAOImpl, com.library.awa.dao.impl.BookDAOImpl" %>
+<%@ page import="java.util.*, com.library.awa.model.Book, com.library.awa.dao.impl.BorrowRecordDAOImpl" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,7 +74,6 @@
     <%
       // 初始化 DAO 实例
       BorrowRecordDAOImpl borrowRecordDAO = new BorrowRecordDAOImpl();
-      BookDAOImpl bookDAO = new BookDAOImpl();
       String studentId = (String) session.getAttribute("studentId");
       boolean hasBorrowed = false;
 
@@ -88,7 +87,7 @@
       List<Book> books = null;
       try {
         // 获取当前库存大于 0 的书籍
-        books = bookDAO.getAvailableBooks();
+        books = borrowRecordDAO.getAvailableBooks();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -134,8 +133,6 @@
       try {
         // 添加借阅记录
         borrowRecordDAO.addBorrowRecord(new com.library.awa.model.BorrowRecord(studentId, bookId));
-        // 更新图书库存
-        bookDAO.updateBookQuantity(bookId, -1);
         out.println("<script>alert('借阅成功！'); location.reload();</script>");
       } catch (Exception e) {
         e.printStackTrace();
