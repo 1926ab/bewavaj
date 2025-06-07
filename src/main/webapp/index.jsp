@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.library.awa.dao.impl.StudentDaoImpl" %>
-<%@ page import="com.library.awa.repository.AdminRepository" %>
 <%@ page import="com.library.awa.dao.impl.AdminDaoImpl" %>
 <!DOCTYPE html>
 <html>
