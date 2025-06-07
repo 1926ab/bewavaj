@@ -17,6 +17,10 @@ public class Book {
         this.category = category;
     }
 
+    public Book() {
+
+    }
+
     // Getter 方法
     public String getId() {
         return id;

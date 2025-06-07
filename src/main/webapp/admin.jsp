@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, com.library.awa.model.Book, com.library.awa.repository.BookRepository" %>
+<%@ page import="java.util.*, com.library.awa.dao.impl.BorrowRecordDAOImpl, com.library.awa.model.BorrowRecord" %>
 <!DOCTYPE html>
 <html>
 <head>
   <title>管理员页面 - 图书管理系统</title>
   <style>
-    /* 设置页面样式 */
+    /* 页面样式 */
     body {
       margin: 0;
       padding: 0;
@@ -23,106 +23,92 @@
     h1 {
       text-align: center;
       color: #333;
-      margin-bottom: 30px;
     }
-    .book-table {
+    .record-table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
     }
-    .book-table th, .book-table td {
+    .record-table th, .record-table td {
       padding: 12px;
       border: 1px solid #ddd;
       text-align: center;
     }
-    .book-table th {
+    .record-table th {
       background-color: #343a40;
       color: white;
     }
-    .book-table td {
+    .record-table td {
       background-color: #f9f9f9;
     }
-    .book-table tr:hover {
+    .record-table tr:hover {
       background-color: #f1f1f1;
     }
-    .action-btn {
+    .logout-btn {
+      background-color: #dc3545;
       color: white;
       border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
+      padding: 10px 20px;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 2px;
-    }
-    .edit-btn {
-      background-color: #ffc107;
-    }
-    .edit-btn:hover {
-      background-color: #e0a800;
-    }
-    .delete-btn {
-      background-color: #dc3545;
-    }
-    .delete-btn:hover {
-      background-color: #c82333;
-    }
-    .add-btn {
-      background-color: #28a745;
-      padding: 10px 15px;
-      margin-bottom: 20px;
       float: right;
     }
-    .add-btn:hover {
-      background-color: #218838;
-    }
-    .action-header {
-      width: 200px;
+    .logout-btn:hover {
+      background-color: #c82333;
     }
   </style>
 </head>
 <body>
 <div class="container">
-  <h1>图书管理系统 - 管理员页面</h1>
+  <h1>管理员页面</h1>
 
-  <button class="action-btn add-btn" onclick="location.href='addBook.jsp'">添加新书</button>
-
-  <table class="book-table">
+  <!-- 借阅记录 -->
+  <h2>借阅记录</h2>
+  <table class="record-table">
     <thead>
     <tr>
+      <th>学生姓名</th>
       <th>书籍编号</th>
-      <th>书名</th>
-      <th>作者</th>
-      <th>ISBN</th>
-      <th>库存数量</th>
-      <th class="action-header">操作</th>
+      <th>书籍名称</th>
     </tr>
     </thead>
     <tbody>
-    <%-- 动态加载图书数据 --%>
+    <%-- 动态加载借阅记录 --%>
     <%
-      BookRepository bookRepository = new BookRepository();
-      List<Book> books = new ArrayList<>();
+      BorrowRecordDAOImpl borrowRecordDAO = new BorrowRecordDAOImpl();
+      List<BorrowRecord> borrowRecords = null;
+
       try {
-        books = bookRepository.getAllBooks(); // 从数据库加载所有图书信息
+        borrowRecords = borrowRecordDAO.getAllBorrowRecords(); // 获取借阅记录
       } catch (Exception e) {
-        out.println("<tr><td colspan='6'>无法加载图书信息，请稍后重试。</td></tr>");
+        e.printStackTrace();
       }
 
-      for (Book book : books) {
+      if (borrowRecords == null || borrowRecords.isEmpty()) {
     %>
     <tr>
-      <td><%= book.getId() %></td>
-      <td><%= book.getTitle() %></td>
-      <td><%= book.getAuthor() %></td>
-<%--      <td><%= book.getIsbn() != null ? book.getIsbn() : "N/A" %></td>--%>
-      <td><%= book.getQuantity() %></td>
-      <td>
-        <button class="action-btn edit-btn" onclick="location.href='editBook.jsp?id=<%= book.getId() %>'">编辑</button>
-        <button class="action-btn delete-btn" onclick="if(confirm('确定要删除《<%= book.getTitle() %>》吗？')) location.href='deleteBook.jsp?id=<%= book.getId() %>'">删除</button>
-      </td>
+      <td colspan="3">暂无借阅记录</td>
     </tr>
-    <% } %>
+    <%
+    } else {
+      for (BorrowRecord record : borrowRecords) {
+    %>
+    <tr>
+      <td><%= record.getStudentName() %></td>
+      <td><%= record.getBookId() %></td>
+      <td><%= record.getBookTitle() %></td>
+    </tr>
+    <%
+        }
+      }
+    %>
     </tbody>
   </table>
+
+  <!-- 退出登录按钮 -->
+  <form method="post" action="index.jsp">
+    <button type="submit" class="logout-btn">退出登录</button>
+  </form>
 </div>
 </body>
 </html>

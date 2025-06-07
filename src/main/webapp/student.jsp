@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, com.library.awa.model.Book, com.library.awa.repository.BookRepository" %>
+<%@ page import="java.util.*, com.library.awa.model.Book, com.library.awa.dao.impl.BorrowRecordDAOImpl, com.library.awa.dao.impl.BookDAOImpl" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,26 +71,47 @@
     </tr>
     </thead>
     <tbody>
-    <%-- 动态加载图书数据 --%>
     <%
-      BookRepository bookRepository = new BookRepository();
-      List<Book> books = new ArrayList<>();
+      // 初始化 DAO 实例
+      BorrowRecordDAOImpl borrowRecordDAO = new BorrowRecordDAOImpl();
+      BookDAOImpl bookDAO = new BookDAOImpl();
+      String studentId = (String) session.getAttribute("studentId");
+      boolean hasBorrowed = false;
+
       try {
-        books = bookRepository.getAllBooks(); // 从数据库加载所有图书信息
+        // 检查学生是否已借阅其他书籍
+        hasBorrowed = borrowRecordDAO.hasActiveBorrow(studentId);
       } catch (Exception e) {
-        out.println("<tr><td colspan='5'>无法加载图书信息，请稍后重试。</td></tr>");
+        e.printStackTrace();
       }
 
+      List<Book> books = null;
+      try {
+        // 获取当前库存大于 0 的书籍
+        books = bookDAO.getAvailableBooks();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      if (books == null || books.isEmpty()) {
+    %>
+    <tr>
+      <td colspan="5">暂无可借书籍</td>
+    </tr>
+    <%
+    } else {
       for (Book book : books) {
     %>
     <tr>
       <td><%= book.getId() %></td>
       <td><%= book.getTitle() %></td>
       <td><%= book.getAuthor() %></td>
-      <td><%= book.getQuantity() %></td> <!-- 替换为 getQuantity() -->
+      <td><%= book.getQuantity() %></td>
       <td>
-        <% if (book.getQuantity() > 0) { %>
-        <form method="post" action="borrowBook.jsp">
+        <% if (hasBorrowed) { %>
+        <button class="borrow-btn" disabled>每名学生最多同时借阅一本图书，请归还后再借阅</button>
+        <% } else if (book.getQuantity() > 0) { %>
+        <form method="post">
           <input type="hidden" name="bookId" value="<%= book.getId() %>">
           <button type="submit" class="borrow-btn">借阅</button>
         </form>
@@ -99,9 +120,29 @@
         <% } %>
       </td>
     </tr>
-    <% } %>
+    <%
+        }
+      }
+    %>
     </tbody>
   </table>
+
+  <%-- 处理借阅逻辑 --%>
+  <%
+    String bookId = request.getParameter("bookId");
+    if (bookId != null && !hasBorrowed) {
+      try {
+        // 添加借阅记录
+        borrowRecordDAO.addBorrowRecord(new com.library.awa.model.BorrowRecord(studentId, bookId));
+        // 更新图书库存
+        bookDAO.updateBookQuantity(bookId, -1);
+        out.println("<script>alert('借阅成功！'); location.reload();</script>");
+      } catch (Exception e) {
+        e.printStackTrace();
+        out.println("<script>alert('借阅失败，请稍后再试！');</script>");
+      }
+    }
+  %>
 </div>
 </body>
 </html>
